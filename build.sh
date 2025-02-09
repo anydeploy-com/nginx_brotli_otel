@@ -1,6 +1,7 @@
 #!/bin/bash
 # shellcheck disable=SC2164
 cd nginx-otel
+mkdir build
 cd build
 cmake -DNGX_OTEL_NGINX_BUILD_DIR=../nginx-1.26.3/objs ..
 make

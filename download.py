@@ -121,7 +121,7 @@ def download_otel_module():
     # subprocess.run(['make'], cwd=os.getcwd())
     #
     # # Go back to initial directory
-    os.chdir('../..')
+    # os.chdir('../..')
 
 def download_brotli_module():
     print("\t\tCloning ngx_brotli repository...")
@@ -143,7 +143,7 @@ def download_brotli_module():
     #
     #
     # # Go back to initial directory
-    os.chdir('../../..')
+    # os.chdir('../../..')
 
 
 def compile_nginx():

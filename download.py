@@ -18,7 +18,7 @@ def install_dependencies():
     if detected_os == 'debian':
         print("Installing dependencies...")
         for package in dependencies_debian:
-            os.system(f"echo {sudo_password} | sudo apt-get install -y {package}")
+            os.system(f"echo {sudo_password} | sudo -S apt-get install -y {package}")
 
     elif detected_os == 'archlinux':
         print("Installing dependencies...")
@@ -90,12 +90,9 @@ def untar_version(version):
 def configure_nginx(version):
     print(f"\tConfiguring {version['version']} with --with-compat...")
     os.chdir(version['version'])
-    result = subprocess.run(['./configure', '--with-compat'], capture_output=True, text=True)
-    if result.returncode != 0:
-        print(f"Configuration failed: {result.stderr}")
-        exit(1)
-    print(result.stdout)
-    os.chdir('..')
+    os.system("./configure --with-compat")
+
+    os.chdir("..")
 
 
 def download_otel_module():
@@ -111,16 +108,19 @@ def download_otel_module():
     subprocess.run(['git', 'clone', 'https://github.com/nginxinc/nginx-otel.git'])
 
     # Change to the nginx-otel directory
-    os.chdir('nginx-otel')
-
-    os.mkdir("build")
-    os.chdir("build")
-
-    # Configure the module
-    subprocess.run(['cmake', f'-DNGX_OTEL_NGINX_BUILD_DIR=../../{nginx_dir}/objs', '..'], cwd=os.getcwd())
-    subprocess.run(['make'], cwd=os.getcwd())
-
-    # Go back to initial directory
+    # os.chdir('nginx-otel')
+    #
+    # # Create a build directory and change to it
+    # os.mkdir("build")
+    # os.chdir("build")
+    #
+    # # Configure the module
+    # subprocess.run(['cmake', f'-DNGX_OTEL_NGINX_BUILD_DIR=../../{nginx_dir}/objs', '..'], cwd=os.getcwd())
+    #
+    # # Build the module
+    # subprocess.run(['make'], cwd=os.getcwd())
+    #
+    # # Go back to initial directory
     os.chdir('../..')
 
 def download_brotli_module():
@@ -131,22 +131,28 @@ def download_brotli_module():
     except FileNotFoundError:
         pass
     subprocess.run(['git', 'clone', '--recurse-submodules', '-j8', 'https://github.com/google/ngx_brotli'])
-    os.chdir('ngx_brotli/deps/brotli')
-    os.mkdir("out")
-    os.chdir("out")
-
-    # Configure the module
-    subprocess.run(['cmake', '-DCMAKE_BUILD_TYPE=Release', '-DBUILD_SHARED_LIBS=OFF', '-DCMAKE_C_FLAGS=-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections', '-DCMAKE_CXX_FLAGS=-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections', '-DCMAKE_INSTALL_PREFIX=./installed', '..'], cwd=os.getcwd())
-
-    # Build the module
-    subprocess.run(['cmake', '--build', '.', '--config', 'Release', '--target', 'brotlienc'], cwd=os.getcwd())
-
-    # Go back to initial directory
-    os.chdir('../../../../')
+    # os.chdir('ngx_brotli/deps/brotli')
+    # os.mkdir("out")
+    # os.chdir("out")
+    #
+    # # Configure the module
+    # subprocess.run(['cmake', '-DCMAKE_BUILD_TYPE=Release', '-DBUILD_SHARED_LIBS=OFF', '-DCMAKE_C_FLAGS=-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections', '-DCMAKE_CXX_FLAGS=-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections', '-DCMAKE_INSTALL_PREFIX=./installed', '..'], cwd=os.getcwd())
+    #
+    # # Build the module
+    # subprocess.run(['cmake', '--build', '.', '--config', 'Release', '--target', 'brotlienc'], cwd=os.getcwd())
+    #
+    #
+    # # Go back to initial directory
+    os.chdir('../../..')
 
 
 def compile_nginx():
     print("Compiling nginx...")
+    # os.chdir(nginx_dir)
+    # os.environ['CFLAGS'] = "-m64 -march=native -mtune=native -Ofast -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections"
+    # os.environ['LDFLAGS'] = "-m64 -Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections"
+    # subprocess.run(['./configure', '--with-compat', '--add-module=../ngx_brotli'], capture_output=True, text=True, cwd=os.getcwd())
+    # os.system("echo {sudo_password} | sudo -S make install PREFIX=/etc/nginx")
 
 # Detect OS and cancel if not supported
 detected_os = detect_os()
@@ -177,7 +183,7 @@ download_otel_module()
 download_brotli_module()
 
 # Compile nginx
-compile_nginx()
+#compile_nginx()
 
 
 

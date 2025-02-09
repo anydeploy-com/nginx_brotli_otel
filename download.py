@@ -156,7 +156,7 @@ def compile_nginx():
 
 # Detect OS and cancel if not supported
 detected_os = detect_os()
-# install_dependencies()
+install_dependencies()
 
 # Get nginx versions
 versions = get_versions()

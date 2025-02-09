@@ -1,5 +1,5 @@
 .idea
 nginx
 nginx-*
-ngx-brotli
+ngx_brotli
 nginx*.tar.gz

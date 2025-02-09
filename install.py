@@ -98,7 +98,7 @@ def configure_nginx(version):
     os.chdir('..')
 
 
-def download_otel_module(nginx_dir):
+def download_otel_module():
     configured_nginx_build_dir = os.path.join(nginx_dir, 'objs')
     print("\t\tConfigured nginx build directory: " + configured_nginx_build_dir)
 
@@ -120,6 +120,33 @@ def download_otel_module(nginx_dir):
     subprocess.run(['cmake', f'-DNGX_OTEL_NGINX_BUILD_DIR=../../{nginx_dir}/objs', '..'], cwd=os.getcwd())
     subprocess.run(['make'], cwd=os.getcwd())
 
+    # Go back to initial directory
+    os.chdir('../..')
+
+def download_brotli_module():
+    print("\t\tCloning ngx_brotli repository...")
+    # Remove the existing directory if it exists
+    try:
+        shutil.rmtree('ngx_brotli')
+    except FileNotFoundError:
+        pass
+    subprocess.run(['git', 'clone', '--recurse-submodules', '-j8', 'https://github.com/google/ngx_brotli'])
+    os.chdir('ngx_brotli/deps/brotli')
+    os.mkdir("out")
+    os.chdir("out")
+
+    # Configure the module
+    subprocess.run(['cmake', '-DCMAKE_BUILD_TYPE=Release', '-DBUILD_SHARED_LIBS=OFF', '-DCMAKE_C_FLAGS=-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections', '-DCMAKE_CXX_FLAGS=-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections', '-DCMAKE_INSTALL_PREFIX=./installed', '..'], cwd=os.getcwd())
+
+    # Build the module
+    subprocess.run(['cmake', '--build', '.', '--config', 'Release', '--target', 'brotlienc'], cwd=os.getcwd())
+
+    # Go back to initial directory
+    os.chdir('../../../../')
+
+
+def compile_nginx():
+    print("Compiling nginx...")
 
 # Detect OS and cancel if not supported
 detected_os = detect_os()
@@ -144,8 +171,14 @@ configure_nginx(selected_version)
 print("\tDownloading additional modules...")
 
 # Otel module - https://github.com/nginxinc/nginx-otel
-download_otel_module(nginx_dir)
+download_otel_module()
 
 # Brotli module - https://github.com/google/ngx_brotli
+download_brotli_module()
+
+# Compile nginx
+compile_nginx()
+
+
 
 print("Current directory: " + os.getcwd())

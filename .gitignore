@@ -1,2 +1,4 @@
 .idea
 nginx
+nginx-*
+nginx-brotli

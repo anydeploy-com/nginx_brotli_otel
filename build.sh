@@ -1,18 +1,18 @@
 #!/bin/bash
-## shellcheck disable=SC2164
-#cd nginx-otel
-#mkdir build
-#cd build
-#cmake -DNGX_OTEL_NGINX_BUILD_DIR=../nginx-1.26.3/objs ..
-#make
-#cd ../..
 
-# git clone --recurse-submodules -j8 https://github.com/google/ngx_brotli
-#cd ngx_brotli/deps/brotli
-#mkdir out && cd out
-#cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_CXX_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_INSTALL_PREFIX=./installed ..
-#cmake --build . --config Release --target brotlienc
-#cd ../../../..
+cd nginx-otel || exit
+mkdir build
+cd build || exit
+cmake -DNGX_OTEL_NGINX_BUILD_DIR=../nginx-1.26.3/objs ..
+make
+cd ../..
+
+git clone --recurse-submodules -j8 https://github.com/google/ngx_brotli
+cd ngx_brotli/deps/brotli || exit
+mkdir out && cd out
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_CXX_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_INSTALL_PREFIX=./installed ..
+cmake --build . --config Release --target brotlienc
+cd ../../../..
 
 
 # Build Nginx

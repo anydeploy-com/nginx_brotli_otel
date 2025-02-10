@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Run as root or with sudo
+if [[ $EUID -ne 0 ]]; then
+  echo "This script must be run as root or with sudo."
+  exit 1
+fi
 
 if [ ! -e "/lib/systemd/system/nginx.service" ]; then
   # Control will enter here if the NGINX service doesn't exist.

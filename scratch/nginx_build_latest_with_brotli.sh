@@ -5,13 +5,6 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-# Pre install
-
-# Copy files
-sudo cp /etc/nginx/nginx.conf /arrow-next/nginx/nginx.conf
-sudo cp /etc/nginx/sites-available/arrowelectrical.co.uk.conf /arrow-next/nginx/arrowelectrical.co.uk.conf
-sudo cp /etc/nginx/sites-available/default.conf /arrow-next/nginx/default.conf
-
 echo "Cleaning up old nginx installation"
 # systemctl stop nginx
 # systemctl disable nginx

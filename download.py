@@ -84,7 +84,19 @@ def untar_version(version):
         shutil.rmtree(version['version'])
     except FileNotFoundError:
         pass
-    tarfile.open(f"{version['version']}.tar.gz", 'r:gz').extractall(filter='data')
+
+    # Check python version
+    python_version = os.sys.version_info
+
+    if python_version >= (3, 13):
+        # If python version 3.13 or higher, use the filter parameter
+        tarfile.open(f"{version['version']}.tar.gz", 'r:gz').extractall(filter='data')
+    else:
+        # If python version 3.12 or lower, use the extractall method
+        tarfile.open(f"{version['version']}.tar.gz", 'r:gz').extractall()
+
+    # Remove the tar.gz file
+    os.remove(f"{version['version']}.tar.gz")
 
 
 def configure_nginx(version):

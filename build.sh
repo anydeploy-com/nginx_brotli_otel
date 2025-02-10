@@ -17,7 +17,7 @@
 
 # Build Nginx
 
-cd nginx-1.26.3
+cd nginx-1* || exit
 export CFLAGS="-m64 -march=native -mtune=native -Ofast -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections"
 export LDFLAGS="-m64 -Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections"
 ./configure \
@@ -69,4 +69,6 @@ export LDFLAGS="-m64 -Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections"
 --with-pcre-jit \
 --with-http_degradation_module \
 --with-http_perl_module=dynamic
-sudo make install
+
+echo "Run \"sudo make install\" to install Nginx"
+# sudo make install

@@ -69,6 +69,7 @@ export LDFLAGS="-m64 -Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections"
 --with-compat \
 --with-file-aio \
 --with-http_v2_module \
+--with-http_v3_module \
 --with-pcre \
 --with-pcre-jit \
 --with-http_degradation_module \

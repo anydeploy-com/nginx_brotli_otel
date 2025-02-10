@@ -96,7 +96,7 @@ def untar_version(version):
         tarfile.open(f"{version['version']}.tar.gz", 'r:gz').extractall()
 
     # Remove the tar.gz file
-    os.remove(f"{version['version']}.tar.gz")
+    os.remove("*.tar.gz")
 
 
 def configure_nginx(version):

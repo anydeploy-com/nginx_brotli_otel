@@ -1,0 +1,93 @@
+server {
+    server_name arrowelectrical.co.uk;
+    root /arrow-next/out/;
+    index index.html;
+
+    # Test HTTP3
+    http2 on;
+    http3 on;
+
+    listen 443 quic reuseport;
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/arrowelectrical.co.uk/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/arrowelectrical.co.uk/privkey.pem;
+
+#    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+#    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+    # Enable Brotli compression
+    brotli on;
+    brotli_comp_level 4;
+    brotli_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+
+
+    # Enable Gzip compress
+    gzip on;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascri
+
+    error_page 404 /404.html;
+
+    location / {
+
+        # required for browsers to direct them to quic port
+        add_header Alt-Svc 'h3=":443"; ma=86400';
+        error_page 403 https://arrowelectricals.co.uk;
+        # Allow Arrow IP
+        allow 81.179.150.113;
+        # Allow Arrow WIFI
+        allow 92.19.254.249;
+#        deny all;
+        try_files $uri $uri/ $uri.html =404;
+    }
+
+    # Main API
+
+    location /api {
+        proxy_pass http://192.168.206.19:5000;
+        rewrite /api/(.*) /$1  break;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+
+}
+    location /api/docs {
+        proxy_pass http://192.168.206.19:5000/docs;
+
+}
+    location /api/openapi.json {
+        proxy_pass http://192.168.206.19:5000/openapi.json;
+}
+
+# Elastic API
+
+    location /elasticapi {
+        proxy_pass http://192.168.128.127:5000;
+        rewrite /elasticapi/(.*) /$1  break;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+}
+    location /elasticapi/docs {
+        proxy_pass http://192.168.128.127:5000/docs;
+        }
+    location /elasticapi/openapi.json {
+        proxy_pass http://192.168.128.127:5000/openapi.json;
+}
+
+
+}
+
+server {
+    if ($host = arrowelectrical.co.uk) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name arrowelectrical.co.uk;
+    root /arrow-next/out/;
+    return 404; # managed by Certbot
+}

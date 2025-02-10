@@ -79,11 +79,6 @@ def remove_if_exists():
 
 def untar_version(version):
     print(f"\tExtracting {version['version']}...")
-    # Remove the existing directory if it exists
-    try:
-        shutil.rmtree(version['version'])
-    except FileNotFoundError:
-        pass
 
     # Check python version
     python_version = os.sys.version_info
@@ -96,7 +91,7 @@ def untar_version(version):
         tarfile.open(f"{version['version']}.tar.gz", 'r:gz').extractall()
 
     # Remove the tar.gz file
-    os.remove("*.tar.gz")
+    os.remove(f"{version['version']}.tar.gz")
 
 
 def configure_nginx(version):

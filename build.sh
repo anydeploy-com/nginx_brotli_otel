@@ -1,4 +1,8 @@
 #!/bin/bash
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit 1
+fi
 
 cd nginx-otel || exit
 mkdir build
@@ -9,7 +13,7 @@ cd ../..
 
 git clone --recurse-submodules -j8 https://github.com/google/ngx_brotli
 cd ngx_brotli/deps/brotli || exit
-mkdir out && cd out
+mkdir out && cd out || exit
 cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DCMAKE_C_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_CXX_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" -DCMAKE_INSTALL_PREFIX=./installed ..
 cmake --build . --config Release --target brotlienc
 cd ../../../..
@@ -71,4 +75,6 @@ export LDFLAGS="-m64 -Wl,-s -Wl,-Bsymbolic -Wl,--gc-sections"
 --with-http_perl_module=dynamic
 
 echo "Run \"sudo make install\" to install Nginx"
-# sudo make install
+make
+make install
+make clean

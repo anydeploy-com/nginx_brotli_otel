@@ -3,7 +3,6 @@ import os
 import shutil
 import requests
 import tarfile
-from bs4 import BeautifulSoup
 import getpass
 import subprocess
 
@@ -11,8 +10,8 @@ import subprocess
 def install_dependencies():
     # Install dependencies
     dependencies_debian = ['git', 'cmake', 'build-essential', 'libssl-dev', 'zlib1g-dev', 'libpcre3-dev', 'pkg-config',
-                           'libc-ares-dev', 'libre2-dev', 'libxslt-dev', 'libgd-dev', 'libperl-dev']
-    dependencies_archlinux = ['base-devel', 'pcre', 'zlib', 'openssl', 'cmake', 'pkgconf', 'c-ares', 're2', 'gd', 'perl']
+                           'libc-ares-dev', 'libre2-dev', 'libxslt-dev', 'libgd-dev', 'libperl-dev', 'python3-bs4']
+    dependencies_archlinux = ['base-devel', 'pcre', 'zlib', 'openssl', 'cmake', 'pkgconf', 'c-ares', 're2', 'gd', 'perl', 'python-beautifulsoup4']
     sudo_password = getpass.getpass("Enter your sudo password: ")
 
     if detected_os == 'debian':
@@ -164,6 +163,9 @@ def compile_nginx():
 # Detect OS and cancel if not supported
 detected_os = detect_os()
 install_dependencies()
+
+# Load BeautifulSoup after installing dependencies
+from bs4 import BeautifulSoup
 
 # Get nginx versions
 versions = get_versions()

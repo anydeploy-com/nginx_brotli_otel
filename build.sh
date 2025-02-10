@@ -7,7 +7,7 @@ fi
 cd nginx-otel || exit
 mkdir build
 cd build || exit
-cmake -DNGX_OTEL_NGINX_BUILD_DIR=../nginx-1.26.3/objs ..
+cmake -DNGX_OTEL_NGINX_BUILD_DIR=../../nginx-1.26.3/objs ..
 make
 cd ../..
 

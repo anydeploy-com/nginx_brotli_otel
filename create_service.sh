@@ -3,7 +3,7 @@
 if [[ $EUID -ne 0 ]]; then
   echo "This script must be run as root or with sudo."
   exit 1
-f
+fi
 
 if [ ! -e "/lib/systemd/system/nginx.service" ]; then
   # Control will enter here if the NGINX service doesn't exist.
@@ -26,4 +26,8 @@ PrivateTmp=true
 [Install]
 WantedBy=multi-user.target
 EOF
+
+  echo "NGINX service file created at $file"
+else
+  echo "NGINX service file already exists at /lib/systemd/system/nginx.service"
 fi

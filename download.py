@@ -6,6 +6,7 @@ import tarfile
 import getpass
 import subprocess
 
+# TODO - add this somewhere sudo useradd --no-create-home --shell /bin/false nginx
 
 def install_dependencies():
     # Install dependencies
